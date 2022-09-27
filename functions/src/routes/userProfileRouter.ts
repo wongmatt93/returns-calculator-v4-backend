@@ -1,6 +1,10 @@
 import express from "express";
 import { getClient } from "../db";
+import BuyToClose from "../models/BuyToClose";
+import BuyToOpen from "../models/BuyToOpen";
 import Dividend from "../models/Dividend";
+import SellToClose from "../models/SellToClose";
+import SellToOpen from "../models/SellToOpen";
 import Stock from "../models/Stock";
 import StockPurchase from "../models/StockPurchase";
 import StockSale from "../models/StockSale";
@@ -138,6 +142,102 @@ userProfileRouter.put("/stocks/dividend/:uid/:ticker", async (req, res) => {
         { arrayFilters: [{ "stock.ticker": ticker }] }
       );
     res.status(200).json(dividend);
+  } catch (err) {
+    errorResponse(err, res);
+  }
+});
+
+userProfileRouter.put("/stocks/bto/:uid/:ticker", async (req, res) => {
+  try {
+    const client = await getClient();
+    const uid: string | undefined = req.params.uid;
+    const ticker: string | undefined = req.params.ticker;
+    const bto: BuyToOpen | undefined = req.body;
+    await client
+      .db()
+      .collection<UserProfile>("user_profiles")
+      .updateOne(
+        { uid, stocks: { $elemMatch: { ticker } } },
+        {
+          $push: {
+            "stocks.$[stock].bto": bto,
+          },
+        },
+        { arrayFilters: [{ "stock.ticker": ticker }] }
+      );
+    res.status(200).json(bto);
+  } catch (err) {
+    errorResponse(err, res);
+  }
+});
+
+userProfileRouter.put("/stocks/btc/:uid/:ticker", async (req, res) => {
+  try {
+    const client = await getClient();
+    const uid: string | undefined = req.params.uid;
+    const ticker: string | undefined = req.params.ticker;
+    const btc: BuyToClose | undefined = req.body;
+    await client
+      .db()
+      .collection<UserProfile>("user_profiles")
+      .updateOne(
+        { uid, stocks: { $elemMatch: { ticker } } },
+        {
+          $push: {
+            "stocks.$[stock].btc": btc,
+          },
+        },
+        { arrayFilters: [{ "stock.ticker": ticker }] }
+      );
+    res.status(200).json(btc);
+  } catch (err) {
+    errorResponse(err, res);
+  }
+});
+
+userProfileRouter.put("/stocks/sto/:uid/:ticker", async (req, res) => {
+  try {
+    const client = await getClient();
+    const uid: string | undefined = req.params.uid;
+    const ticker: string | undefined = req.params.ticker;
+    const sto: SellToOpen | undefined = req.body;
+    await client
+      .db()
+      .collection<UserProfile>("user_profiles")
+      .updateOne(
+        { uid, stocks: { $elemMatch: { ticker } } },
+        {
+          $push: {
+            "stocks.$[stock].sto": sto,
+          },
+        },
+        { arrayFilters: [{ "stock.ticker": ticker }] }
+      );
+    res.status(200).json(sto);
+  } catch (err) {
+    errorResponse(err, res);
+  }
+});
+
+userProfileRouter.put("/stocks/stc/:uid/:ticker", async (req, res) => {
+  try {
+    const client = await getClient();
+    const uid: string | undefined = req.params.uid;
+    const ticker: string | undefined = req.params.ticker;
+    const stc: SellToClose | undefined = req.body;
+    await client
+      .db()
+      .collection<UserProfile>("user_profiles")
+      .updateOne(
+        { uid, stocks: { $elemMatch: { ticker } } },
+        {
+          $push: {
+            "stocks.$[stock].stc": stc,
+          },
+        },
+        { arrayFilters: [{ "stock.ticker": ticker }] }
+      );
+    res.status(200).json(stc);
   } catch (err) {
     errorResponse(err, res);
   }
