@@ -160,7 +160,7 @@ userProfileRouter.put("/stocks/bto/:uid/:ticker", async (req, res) => {
         { uid, stocks: { $elemMatch: { ticker } } },
         {
           $push: {
-            "stocks.$[stock].bto": bto,
+            "stocks.$[stock].buyToOpenOptions": bto,
           },
         },
         { arrayFilters: [{ "stock.ticker": ticker }] }
@@ -184,7 +184,7 @@ userProfileRouter.put("/stocks/btc/:uid/:ticker", async (req, res) => {
         { uid, stocks: { $elemMatch: { ticker } } },
         {
           $push: {
-            "stocks.$[stock].btc": btc,
+            "stocks.$[stock].buyToCloseOptions": btc,
           },
         },
         { arrayFilters: [{ "stock.ticker": ticker }] }
@@ -208,7 +208,7 @@ userProfileRouter.put("/stocks/sto/:uid/:ticker", async (req, res) => {
         { uid, stocks: { $elemMatch: { ticker } } },
         {
           $push: {
-            "stocks.$[stock].sto": sto,
+            "stocks.$[stock].sellToOpenOptions": sto,
           },
         },
         { arrayFilters: [{ "stock.ticker": ticker }] }
@@ -232,7 +232,7 @@ userProfileRouter.put("/stocks/stc/:uid/:ticker", async (req, res) => {
         { uid, stocks: { $elemMatch: { ticker } } },
         {
           $push: {
-            "stocks.$[stock].stc": stc,
+            "stocks.$[stock].sellToCloseOptions": stc,
           },
         },
         { arrayFilters: [{ "stock.ticker": ticker }] }
