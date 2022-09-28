@@ -1,4 +1,5 @@
 export default interface SellToOpen {
+  type: string;
   transactionDate: string;
   callPut: string;
   strike: number;
