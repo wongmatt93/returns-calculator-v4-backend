@@ -171,20 +171,25 @@ userProfileRouter.put("/stocks/bto/:uid/:ticker", async (req, res) => {
   }
 });
 
-userProfileRouter.put("/stocks/btc/:uid/:ticker", async (req, res) => {
+userProfileRouter.put("/stocks/btc/:uid/:ticker/:index", async (req, res) => {
   try {
     const client = await getClient();
     const uid: string | undefined = req.params.uid;
     const ticker: string | undefined = req.params.ticker;
     const btc: BuyToClose | undefined = req.body;
+    const index: string = req.params.index;
     await client
       .db()
       .collection<UserProfile>("user_profiles")
       .updateOne(
-        { uid, stocks: { $elemMatch: { ticker } } },
+        { uid },
         {
           $push: {
             "stocks.$[stock].buyToCloseOptions": btc,
+          },
+          //@ts-ignore
+          $set: {
+            [`stocks.$[stock].sellToOpenOptions.${index}.open`]: false,
           },
         },
         { arrayFilters: [{ "stock.ticker": ticker }] }
