@@ -224,12 +224,13 @@ userProfileRouter.put("/stocks/sto/:uid/:ticker", async (req, res) => {
   }
 });
 
-userProfileRouter.put("/stocks/stc/:uid/:ticker", async (req, res) => {
+userProfileRouter.put("/stocks/stc/:uid/:ticker/:index", async (req, res) => {
   try {
     const client = await getClient();
     const uid: string | undefined = req.params.uid;
     const ticker: string | undefined = req.params.ticker;
     const stc: SellToClose | undefined = req.body;
+    const index: string = req.params.index;
     await client
       .db()
       .collection<UserProfile>("user_profiles")
@@ -238,6 +239,10 @@ userProfileRouter.put("/stocks/stc/:uid/:ticker", async (req, res) => {
         {
           $push: {
             "stocks.$[stock].sellToCloseOptions": stc,
+          },
+          //@ts-ignore
+          $set: {
+            [`stocks.$[stock].buyToOpenOptions.${index}.open`]: false,
           },
         },
         { arrayFilters: [{ "stock.ticker": ticker }] }
