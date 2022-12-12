@@ -34,13 +34,11 @@ userProfileRouter.get("/:uid", async (req, res) => {
   try {
     const uid: string = req.params.uid;
     const client = await getClient();
-    const result = client
+    const result = await client
       .db()
       .collection<UserProfile>("user_profiles")
       .findOne({ uid });
-    result
-      ? res.status(200).json(result)
-      : res.status(404).json("Id not found");
+    res.status(200).json(result);
   } catch (err) {
     errorResponse(err, res);
   }
